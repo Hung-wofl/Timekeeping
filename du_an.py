@@ -1,8 +1,52 @@
-# Khởi tạo các biến toàn cục
+# import clock
+import turtle
+import time
+def clock():
+    # Hàm tạo độ trễ 
+    def custom_sleep(seconds):
+        start = time.time() # Trả về thời gian hiện tại tính bằng giây
+        while time.time() - start < seconds: # Chạy cho đến khi khoảng thời gian đã trôi qua bằng số giây yêu cầu
+            pass
+
+    # Hàm để lấy thời gian hiện tại từ hệ thống
+    def get_current_time():
+        now = time.localtime() # Trả về thời gian hiện tại
+        hours = now.tm_hour
+        minutes = now.tm_min  # (now.tm_hour, now.tm_min, now.tm_sec) truy xuất giờ, phút và giây từ struct_time
+        seconds = now.tm_sec
+        day = now.tm_mday
+        month = now.tm_mon
+        year =now.tm_year
+        return f"{hours:02}:{minutes:02}:{seconds:02}\n{day}/{month}/{year}" # Định dạng thời gian thành chuỗi với hai chữ số (ví dụ: 09:05:03).
+
+    # Thiết lập màn hình Turtle
+    turtle_screen = turtle.Screen()
+    turtle_screen.title("Đồng hồ tại đây")
+    turtle_screen.bgcolor("black")
+
+    # Thiết lập đối tượng Turtle để hiển thị thời gian
+    actor_turtle = turtle.Turtle()
+    actor_turtle.hideturtle()
+    actor_turtle.color("pink")
+    # actor_turtle.penup()
+    actor_turtle.goto(0, 0)
+    # actor_turtle.speed(0)
+
+    def update_time():
+        current_time = get_current_time() # Lấy thời gian hiện tại
+        actor_turtle.clear() # Xóa thời gian cũ
+        actor_turtle.write(current_time, align="center", font=("Courier", 40, "bold")) # In thời gian hiện tại
+        turtle_screen.ontimer(update_time, 1000) # Cập nhật lại thời gian sau 1 giây
+
+# Bắt đầu cập nhật thời gian
+    update_time()
+    turtle_screen.exitonclick()
+
+# ---------------------------------------------------
+
 namenv = []
-timenv = []
-frequency = {}
 register = []
+log = []
 
 def dangki():  # Đăng kí thông tin
     while True:
@@ -36,6 +80,7 @@ def dangki():  # Đăng kí thông tin
         elif choicedk == '1':  # Đăng nhập
             login = input('Đăng nhập tên nhân viên: ')
             if login in register:  # Nếu tên đã đăng kí, truy cập vào giao diện
+                log.append(login)
                 input('Đăng nhập thành công')
                 giaodien()
             else:
@@ -53,42 +98,27 @@ def giaodien():  # Giao diện và chấm công
         choice = input("Chọn một tùy chọn: ")
 
         if choice == "1":  # Chấm công
-            name = input("Nhập tên nhân viên: ")
-            if name in register:
-                namenv.append(name)
-                print(f"Đã chấm công cho nhân viên {name}")
-            else:
-                print('Tên của bạn chưa được đăng kí')
-                dangki()
+            clock()
+            print(f'{log} chấm công thành công')
+            input('')
+            namenv.append(log)
+       
 
-        elif choice == "2":  # Tính ngày đi làm
-            for item in namenv:
-                if item in frequency:
-                    frequency[item] += 1
-                else:
-                    frequency[item] = 1
-            name_ds = input('Nhập tên nhân viên để hiển thị danh sách: ')
-            if name_ds in frequency:  # Hiển thị danh sách chấm công
-                print(f"{frequency[name_ds]} ngày")
-            else:
-                print(f"'{name_ds}' không có trong danh sách.")
-            input('Nhấn Enter để tiếp tục...')
-
-        elif choice == "3":  # Tính lương
-            tinh_luong = input('Nhập tên nhân viên để tính lương: ')
-            if tinh_luong in frequency:
-                print(f'Số ngày làm việc: {frequency[tinh_luong] * 100} VNĐ')  # Giả sử mỗi ngày công là 100 VNĐ
-            else:
-                print(f'Nhân viên {tinh_luong} không có trong danh sách chấm công.')
-            input('Nhấn Enter để tiếp tục...')
-
-        elif choice == "4":  # Thoát
+        if choice == "2":  # Tính ngày đi làm
+            day = namenv.count(log)
+            print(f"{log} đã đi làm được {day} ngày ")
+            input('')
+            
+        if choice == "3":  # Tính lương
+            print(f'tổng lương {log} làm được {day} và tổng lương là {day * 100} VNĐ')  # Giả sử mỗi ngày công là 100 VNĐ
+            input('')
+           
+        if choice == "4":  # Thoát
             print("Thoát phần mềm.")
+            log.clear()
             break
 
-        else:
-            print("Lựa chọn không hợp lệ. Vui lòng thử lại.")
-            input('Nhấn Enter để tiếp tục...')
+        
 
 # Bắt đầu chương trình
 dangki()
